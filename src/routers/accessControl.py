@@ -16,7 +16,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 async def protected(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
 
     token_info = decode_access_token(token)
-    print(token_info)
+    print(token_info["type"])
 
     try:
         if token_info["type"] != "acceso":
@@ -41,8 +41,9 @@ async def protected(token: str = Depends(oauth2_scheme), db: Session = Depends(g
 
 @router.post("/refresh")
 def refresh(refresh_token: refresh_token, db: Session = Depends(get_db)):
-    token_info = decode_access_token(refresh_token)
-    print(token_info["type"], token_info["sub"])
+    print(refresh_token)
+    token_info = decode_access_token(refresh_token.refresh_token)
+    print(token_info)
 
     try:
         if token_info["type"] != "refresh":
